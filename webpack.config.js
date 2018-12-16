@@ -1,7 +1,9 @@
 const webpack = require('webpack');
+const autoprefixer = require('autoprefixer');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -26,20 +28,25 @@ module.exports = {
       {
         test: /\.tsx$/,
         enforce: 'pre',
-        use: [
-          {
-            loader: 'tslint-loader'
-          }
-        ]
-      },
-      {
-        test: /\.tsx?$/,
-        loader: 'awesome-typescript-loader'
+        use: ['awesome-typescript-loader', 'tslint-loader']
       },
       {
         enforce: 'pre',
         test: /\.js$/,
-        loader: 'source-map-loader'
+        use: 'source-map-loader'
+      },
+      {
+        test: /\.css$/,
+        use: [
+          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [autoprefixer]
+            }
+          }
+        ]
       }
     ]
   },
@@ -61,6 +68,10 @@ if (isDev) {
         from: 'public',
         to: ''
       }
-    ])
+    ]),
+    new MiniCssExtractPlugin({
+      filename: 'style.css',
+      chunkFilename: '[id].css'
+    })
   );
 }
