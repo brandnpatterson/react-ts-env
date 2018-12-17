@@ -24,8 +24,6 @@
     "cypress",
     "scripts",
     "acceptance-tests",
-    "jest",
-    "jest.confing.js",
     "src/setupTests.ts",
     "webpack",
     "webpack.config.js"
